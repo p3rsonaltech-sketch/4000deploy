@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resgate seu Cupom - Casas Bahia</title>
+
+    <style>
+        /* Reset básico e configurações globais */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0057B8 0%, #003d80 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Container Principal */
+        .container {
+            background: #ffffff;
+            color: #333;
+            padding: 40px 30px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Logo Placeholder */
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            color: #0057B8;
+            margin-bottom: 20px;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 22px;
+            color: #0057B8;
+        }
+
+        p.subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* Inputs */
+        label {
+            display: block;
+            text-align: left;
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0057B8;
+        }
+
+        /* Botão */
+        button {
+            background-color: #E31C2D;
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button:hover {
+            background-color: #c41420;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Botão Voltar */
+        .btn-voltar {
+            background-color: #555;
+            font-size: 14px;
+        }
+
+        .btn-voltar:hover {
+            background-color: #333;
+        }
+
+        /* Mensagem de Erro */
+        .erro {
+            color: #d32f2f;
+            font-size: 13px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            min-height: 20px;
+        }
+
+        /* Tela 2: Sucesso */
+        .desconto {
+            font-size: 36px;
+            font-weight: 800;
+            color: #E31C2D;
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px dashed #E31C2D;
+            border-radius: 10px;
+            background-color: #fff5f5;
+        }
+
+        .nome-vinculado {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .info-loja {
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        a {
+            color: #0057B8;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loader Spinner */
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Tela 1 -->
+    <div class="container" id="tela1">
+        
+        <div class="logo">Casas Bahia</div>
+        <h1>Promoção Berrini</h1>
+        <p class="subtitle">Digite seu nome para gerar seu cupom exclusivo de 10% de desconto.</p>
+
+        <label for="nome">Primeiro Nome</label>
+        <input type="text" id="nome" placeholder="Ex: João" maxlength="30">
+
+        <div id="mensagem" class="erro"></div>
+
+        <button onclick="resgatarCupom()" id="btnResgatar">
+            <span id="btnTexto">Resgatar cupom</span>
+            <div class="spinner" id="spinner"></div>
+        </button>
+
+    </div>
+
+
+    <!-- Tela 2 -->
+    <div class="container" id="tela2" style="display: none;">
+
+        <div class="logo">Casas Bahia</div>
+        <h1 style="color: #2e7d32;">🎉 Sucesso!</h1>
+        <p class="subtitle">Seu cupom foi resgatado com sucesso.</p>
+
+        <div class="desconto">
+            🎟 10% Off Berrini
+        </div>
+
+        <p>Olá, <span class="nome-vinculado" id="nomeMostrado">---</span>!</p>
+
+        <div class="info-loja">
+            <strong>📍 Retire seu cupom físico:</strong><br>
+            Endereço: R. Florida, 1970<br>
+            <a href="https://maps.app.goo.gl/S5nHuM2mGtZCZMm17" target="_blank">
+                👉 Abrir no Google Maps
+            </a>
+            <br><br>
+            <strong>🚘 Estacionamento:</strong><br>
+            Netpark gratuito ao lado da loja
+        </div>
+        
+        <br>
+        <button class="btn-voltar" onclick="voltar()">Voltar</button>
+
+    </div>
+
+
+    <script>
+
+        function validarNome(nome) {
+            // Remove espaços extras e verifica se tem pelo menos 2 letras
+            nome = nome.trim();
+            if(nome.length < 2) return false;
+            // Verifica se contém apenas letras e espaços
+            if(!/^[a-zA-ZÀ-ÿ\s]+$/.test(nome)) return false;
+            return true;
+        }
+
+        // Verifica se já resgatou ao carregar a página
+        window.onload = function() {
+            if(localStorage.getItem("cupomResgatado") === "sim") {
+                mostrarTela2(localStorage.getItem("nomeCupom"));
+            }
+        }
+
+        function mostrarTela2(nomeFormatado) {
+            document.getElementById("tela1").style.display = "none";
+            document.getElementById("tela2").style.display = "block";
+            document.getElementById("nomeMostrado").innerText = nomeFormatado;
+        }
+
+        function mostrarTela1() {
+            document.getElementById("tela2").style.display = "none";
+            document.getElementById("tela1").style.display = "block";
+        }
+
+        function voltar() {
+            // Limpa o campo de nome
+            document.getElementById("nome").value = "";
+            document.getElementById("nome").disabled = false;
+            
+            // Reseta o botão
+            document.getElementById("btnTexto").innerText = "Resgatar cupom";
+            document.getElementById("spinner").style.display = "none";
+            document.getElementById("btnResgatar").style.opacity = "1";
+            document.getElementById("btnResgatar").style.cursor = "pointer";
+            
+            // Limpa a mensagem de erro
+            document.getElementById("mensagem").innerText = "";
+            document.getElementById("nome").style.borderColor = "#e0e0e0";
+            
+            // Volta para a tela 1
+            mostrarTela1();
+        }
+
+        function resgatarCupom() {
+            const inputNome = document.getElementById("nome");
+            const msgErro = document.getElementById("mensagem");
+            const btnTexto = document.getElementById("btnTexto");
+            const spinner = document.getElementById("spinner");
+            
+            let nome = inputNome.value.trim();
+
+            // Pega apenas o primeiro nome
+            let primeiroNome = nome.split(' ')[0];
+            // Capitaliza a primeira letra
+            primeiroNome = primeiroNome.charAt(0).toUpperCase() + primeiroNome.slice(1).toLowerCase();
+
+            if(!validarNome(nome)) {
+                msgErro.innerText = "Por favor, digite um nome válido.";
+                inputNome.style.borderColor = "red";
+                return;
+            }
+
+            msgErro.innerText = "";
+            inputNome.style.borderColor = "#e0e0e0";
+
+            inputNome.disabled = true;
+            btnTexto.innerText = "Processando...";
+            spinner.style.display = "block";
+            document.getElementById("btnResgatar").style.opacity = "0.7";
+            document.getElementById("btnResgatar").style.cursor = "not-allowed";
+
+            setTimeout(() => {
+                localStorage.setItem("cupomResgatado", "sim");
+                localStorage.setItem("nomeCupom", primeiroNome);
+                mostrarTela2(primeiroNome);
+            }, 1500);
+        }
+    </script>
+
+</body>
+</html>
