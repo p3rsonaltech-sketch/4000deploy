@@ -121,6 +121,25 @@
             background-color: #333;
         }
 
+        /* Botão Google Maps */
+        .btn-maps {
+            background-color: #4285F4;
+            margin-bottom: 10px;
+        }
+
+        .btn-maps:hover {
+            background-color: #3367d6;
+        }
+
+        /* Botão Confirmar */
+        .btn-confirmar {
+            background-color: #2e7d32;
+        }
+
+        .btn-confirmar:hover {
+            background-color: #1b5e20;
+        }
+
         /* Mensagem de Erro */
         .erro {
             color: #d32f2f;
@@ -130,7 +149,25 @@
             min-height: 20px;
         }
 
-        /* Tela 2: Sucesso */
+        /* Mensagem de Info */
+        .info {
+            color: #1976d2;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        /* Tela 2: Avaliação */
+        .aviso-importante {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        /* Tela 3: Sucesso */
         .desconto {
             font-size: 36px;
             font-weight: 800;
@@ -194,7 +231,7 @@
 
 <body>
 
-    <!-- Tela 1 -->
+    <!-- Tela 1: Nome -->
     <div class="container" id="tela1">
         
         <div class="logo">Casas Bahia</div>
@@ -206,7 +243,7 @@
 
         <div id="mensagem" class="erro"></div>
 
-        <button onclick="resgatarCupom()" id="btnResgatar">
+        <button onclick="irParaAvaliacao()" id="btnResgatar">
             <span id="btnTexto">Resgatar cupom</span>
             <div class="spinner" id="spinner"></div>
         </button>
@@ -214,12 +251,46 @@
     </div>
 
 
-    <!-- Tela 2 -->
+    <!-- Tela 2: Avaliação Google -->
     <div class="container" id="tela2" style="display: none;">
 
         <div class="logo">Casas Bahia</div>
+        <h1>⭐ Avaliação Google</h1>
+        <p class="subtitle">Antes de.resgatar seu cupom, avalie sua última experiência como cliente Casas Bahia.</p>
+
+        <div class="aviso-importante">
+            <strong>📝 Como funciona:</strong><br>
+            1. Clique no botão abaixo e vá até o Google Maps<br>
+            2. Avalie sua experiência (estrelas + comentário)<br>
+            3. Volte aqui e confirme abaixo
+        </div>
+
+        <a href="https://www.google.com/maps/place/Casas+Bahia/@-23.6061897,-46.6988802,17z/data=!4m8!3m7!1s0x94ce57897b290013:0xee13164b0c27558!8m2!3d-23.6061897!4d-46.6963053!9m1!1b1!16s%2Fg%2F11x0pydymm?entry=ttu&g_ep=EgoyMDI2MDEyOC4wIKXMDSoASAFQAw%3D%3D" 
+           target="_blank" 
+           onclick="abriuMaps()">
+            <button class="btn-maps">
+                ⭐ Avaliar no Google Maps
+            </button>
+        </a>
+
+        <div id="msgInfo" class="info">Clique no botão acima para fazer sua avaliação</div>
+
+        <button class="btn-confirmar" onclick="confirmarAvaliacao()" id="btnConfirmar" disabled>
+            ✓ Confirmar avaliação
+        </button>
+
+        <br><br>
+        <button class="btn-voltar" onclick="voltarTela1()">Voltar</button>
+
+    </div>
+
+
+    <!-- Tela 3: Cupom Liberado -->
+    <div class="container" id="tela3" style="display: none;">
+
+        <div class="logo">Casas Bahia</div>
         <h1 style="color: #2e7d32;">🎉 Sucesso!</h1>
-        <p class="subtitle">Seu cupom foi resgatado com sucesso.</p>
+        <p class="subtitle">Obrigado pela sua avaliação! Seu cupom foi liberado.</p>
 
         <div class="desconto">
             🎟 10% Off Berrini
@@ -239,7 +310,7 @@
         </div>
         
         <br>
-        <button class="btn-voltar" onclick="voltar()">Voltar</button>
+        <button class="btn-voltar" onclick="voltarTela1()">Voltar</button>
 
     </div>
 
@@ -258,41 +329,51 @@
         // Verifica se já resgatou ao carregar a página
         window.onload = function() {
             if(localStorage.getItem("cupomResgatado") === "sim") {
-                mostrarTela2(localStorage.getItem("nomeCupom"));
+                mostrarTela3(localStorage.getItem("nomeCupom"));
             }
         }
 
-        function mostrarTela2(nomeFormatado) {
+        function mostrarTela2() {
             document.getElementById("tela1").style.display = "none";
             document.getElementById("tela2").style.display = "block";
+        }
+
+        function mostrarTela3(nomeFormatado) {
+            document.getElementById("tela1").style.display = "none";
+            document.getElementById("tela2").style.display = "none";
+            document.getElementById("tela3").style.display = "block";
             document.getElementById("nomeMostrado").innerText = nomeFormatado;
         }
 
-        function mostrarTela1() {
-            document.getElementById("tela2").style.display = "none";
-            document.getElementById("tela1").style.display = "block";
-        }
-
-        function voltar() {
-            // Limpa o campo de nome
+        function voltarTela1() {
+            // Limpa tudo e volta para o início
+            localStorage.removeItem("cupomResgatado");
+            localStorage.removeItem("nomeCupom");
+            localStorage.removeItem("nomeCupomTemp");
+            
             document.getElementById("nome").value = "";
             document.getElementById("nome").disabled = false;
+            document.getElementById("mensagem").innerText = "";
+            document.getElementById("nome").style.borderColor = "#e0e0e0";
             
-            // Reseta o botão
+            // Reseta botão
             document.getElementById("btnTexto").innerText = "Resgatar cupom";
             document.getElementById("spinner").style.display = "none";
             document.getElementById("btnResgatar").style.opacity = "1";
             document.getElementById("btnResgatar").style.cursor = "pointer";
             
-            // Limpa a mensagem de erro
-            document.getElementById("mensagem").innerText = "";
-            document.getElementById("nome").style.borderColor = "#e0e0e0";
+            // Reseta tela 2
+            document.getElementById("btnConfirmar").disabled = true;
+            document.getElementById("msgInfo").innerText = "Clique no botão acima para fazer sua avaliação";
+            document.getElementById("msgInfo").style.color = "#1976d2";
+            document.getElementById("btnConfirmar").innerText = "✓ Confirmar avaliação";
             
-            // Volta para a tela 1
-            mostrarTela1();
+            document.getElementById("tela3").style.display = "none";
+            document.getElementById("tela2").style.display = "none";
+            document.getElementById("tela1").style.display = "block";
         }
 
-        function resgatarCupom() {
+        function irParaAvaliacao() {
             const inputNome = document.getElementById("nome");
             const msgErro = document.getElementById("mensagem");
             const btnTexto = document.getElementById("btnTexto");
@@ -314,6 +395,9 @@
             msgErro.innerText = "";
             inputNome.style.borderColor = "#e0e0e0";
 
+            // Salva o nome temporariamente
+            localStorage.setItem("nomeCupomTemp", primeiroNome);
+
             inputNome.disabled = true;
             btnTexto.innerText = "Processando...";
             spinner.style.display = "block";
@@ -321,9 +405,34 @@
             document.getElementById("btnResgatar").style.cursor = "not-allowed";
 
             setTimeout(() => {
+                btnTexto.innerText = "Resgatar cupom";
+                spinner.style.display = "none";
+                document.getElementById("btnResgatar").style.opacity = "1";
+                document.getElementById("btnResgatar").style.cursor = "pointer";
+                inputNome.disabled = true; // Mantém desabilitado
+                mostrarTela2();
+            }, 1000);
+        }
+
+        function abriuMaps() {
+            document.getElementById("msgInfo").innerText = "✓ Após fazer sua avaliação, volte aqui e clique no botão abaixo";
+            document.getElementById("msgInfo").style.color = "#2e7d32";
+            document.getElementById("btnConfirmar").disabled = false;
+        }
+
+        function confirmarAvaliacao() {
+            const btnConfirmar = document.getElementById("btnConfirmar");
+            
+            btnConfirmar.innerText = "Processando...";
+            btnConfirmar.disabled = true;
+
+            setTimeout(() => {
+                let nome = localStorage.getItem("nomeCupomTemp");
                 localStorage.setItem("cupomResgatado", "sim");
-                localStorage.setItem("nomeCupom", primeiroNome);
-                mostrarTela2(primeiroNome);
+                localStorage.setItem("nomeCupom", nome);
+                localStorage.removeItem("nomeCupomTemp");
+                
+                mostrarTela3(nome);
             }, 1500);
         }
     </script>
